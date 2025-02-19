@@ -13,7 +13,7 @@ scene = sceneSet(scene,'fov',1);
 wvf = wvfSet(wvf,'npixels',1024*8);
 
 % % Try change to dot and line scratches, as you like
-nsides = [0 4 6 8 0];
+nsides = [4 0 6 0 8 0];
 img = cell(numel(nsides),1);
 sensor = [];
 
