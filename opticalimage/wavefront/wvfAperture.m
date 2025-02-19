@@ -131,15 +131,18 @@ if isempty(texFile)
     num_lines = round(num_lines);
 
     % max_width = max(0, round(5 + randn * 5));
+    % 不应该来回折线，而是生成几组，组内同方向，的长划痕
     for i = 1:num_lines
 
-        num_segments = randi(16);
+        %num_segments = randi(16);
+        num_segments = 1;
         segment_length = rand * segmentLength;
 
         % Start position
         start_xy = rand(2, 1) * imageSize;
         %
-        segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
+        %segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
+        segments_xy = [1;1] * segment_length;
         vertices_xy = cumsum([start_xy, segments_xy], 2);
         vertices_xy = reshape(vertices_xy, 1, []);
 
@@ -199,6 +202,16 @@ if ndims(im) == 3
 end
 
 % Now make the pattern circular
+[X,Y] = meshgrid((1:imageSize) - centerPoint(1),(1:imageSize) - centerPoint(2));
+imRadius = sqrt(X.^2 + Y.^2);
+% ieNewGraphWin; imagesc(imRadius); colormap(gray); colorbar; axis image
+idx = (imRadius > radius);
+im(idx) = 0;
+
+%another circular
+temp1 = round(imageSize/12 * 5);
+temp2 = round(imageSize/6);
+centerPoint = [temp1 + 1+randi(temp2), temp1 + 1+randi(temp2)];
 [X,Y] = meshgrid((1:imageSize) - centerPoint(1),(1:imageSize) - centerPoint(2));
 imRadius = sqrt(X.^2 + Y.^2);
 % ieNewGraphWin; imagesc(imRadius); colormap(gray); colorbar; axis image

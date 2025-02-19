@@ -58,7 +58,8 @@ xvals = round(linspace(0.5,0.5,nCircles)*imSize);
 radius = radius*imSize;
 for ii = 1:numel(xvals)
     cc = mod(ii,numel(cColors)) + 1;    
-    img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',cColors{cc});
+    %img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',cColors{cc});
+    img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[0.1+0.1*rand(),0.2+0.8*rand(),0.2+0.8*rand()]);
 end
 
 %% Put lines of different thickness and orientation around the middle
