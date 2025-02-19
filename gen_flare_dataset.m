@@ -13,7 +13,7 @@ scene = sceneSet(scene,'fov',1);
 wvf = wvfSet(wvf,'npixels',1024*8);
 
 % % Try change to dot and line scratches, as you like
-nsides = [4 6 8 0];
+nsides = [0 4 6 8 0];
 img = cell(numel(nsides),1);
 sensor = [];
 
@@ -28,8 +28,8 @@ end
 % Iterate over nsides to generate and save images
 for ii = 1:numel(nsides)
     [aperture, params] = wvfAperture(wvf,'nsides',nsides(ii),...
-        'dot mean',10, 'dot sd',5, 'dot opacity',0.5,'dot radius',5,...
-        'line mean',100, 'line sd', 5, 'line opacity',0.5,'linewidth',2,'segmentlength',2000);
+        'dot mean',10, 'dot sd',5, 'dot opacity',0,'dot radius',5,...
+        'line mean',100, 'line sd', 5, 'line opacity',0,'linewidth',2,'segmentlength',2000);
     apertureFilename = fullfile(outputDir, sprintf('aperture_%d.png', ii));
     imwrite(aperture, apertureFilename);  % Save as PNG (you can change the format)
     oi = oiSet(oi,'fnumber',1.5);
@@ -61,4 +61,3 @@ for ii = 1:numel(nsides)
     
     % Optionally, you can display the image
     %ipWindow(ip);
-end
