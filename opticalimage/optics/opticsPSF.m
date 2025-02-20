@@ -172,6 +172,7 @@ mmUnitScale      = 1000/currentUnitScale;
 wvf = wvfSet(wvf,'field size mm', pupil_spacing * oiSize * mmUnitScale); % only accept mm
 
 % Compute the pupil function with the new parameters
+%here!
 wvf = wvfCompute(wvf,'aperture',aperture);
 
 % Get the wavelength-dependent PSFs

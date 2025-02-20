@@ -434,6 +434,7 @@ for ii = 1:nWavelengths
     % Create the pupil function, combining the aperture and pupil phase
     % functions. 
     pupilfunc{ii} = aperture .* pupilfuncphase;
+
     %pupilfunc{ii} = pupilfuncphase;
     %{
      ieNewGraphWin; imagesc(pupilPos,pupilPos,aperture); axis image

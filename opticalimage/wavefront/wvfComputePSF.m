@@ -111,7 +111,28 @@ for wl = 1:nWave
     % real part, but this way we avoid any very small imaginary bits
     % that arise because of numerical roundoff.
     psf{wl} = real(inten);
-    
+    % 假设 psf{wl} 是一个二维矩阵
+    % add by hhq
+    % 加入这个，来满足傅里叶光学中，不同波长带来的不同size
+    [m, n] = size(psf{wl});  % 获取原矩阵的尺寸
+
+    k = wList(wl)/wList(nWave);  % 假设 k 是一个大于1的常数，可以是一个实数
+
+    % 创建原始坐标网格
+    %[xx, yy] = meshgrid(1:n, 1:m);
+
+    % 计算对应的新坐标：原坐标除以 k，得到新的浮动坐标
+    %new_xx = xx / k;
+    %new_yy = yy / k;
+    factor = 1/k;
+    % 使用插值法来生成新的 psf{wl} 数组，保持原始大小
+    psf_resized = imresize(psf{wl}, factor, 'bilinear');
+
+    % 通过 imresize 使得最终的输出大小和原来一样
+    %psf{wl} = imresize(psf_resized, [m, n], 'nearest');
+    %psf{wl} = CropCenter(psf_resized, m);
+    window = centerCropWindow2d(size(psf_resized), [m,n]);
+    psf{wl} = imcrop(psf_resized, window);
     %psf{wl} = abs(fft2(pupilfunc{wl})) .^ 2;
     %psf{wl} = fftshift(fftshift(psf{wl}, 1), 2);
 

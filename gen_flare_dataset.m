@@ -61,3 +61,4 @@ for ii = 1:numel(nsides)
     
     % Optionally, you can display the image
     %ipWindow(ip);
+end
