@@ -132,6 +132,7 @@ if isempty(texFile)
 
     % max_width = max(0, round(5 + randn * 5));
     % 不应该来回折线，而是生成几组，组内同方向，的长划痕
+    % 此处改成与镜头实际的常见微观划痕一致，找资料吧
     for i = 1:num_lines
 
         %num_segments = randi(16);

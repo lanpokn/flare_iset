@@ -390,6 +390,39 @@ for ii = 1:nWavelengths
     % 
     % This wastes a little time when we just compute diffraction, but
     % that is the least of our worries.
+    %add by hhq, I have to do it here
+    %jIndex=[0,1,2,3,4,5];
+    %val = [120000,4,4,4,2,1];
+    %jIndex=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+    %val = [120000*rand(),10*rand(),10*rand(),4,2,1];
+    
+    jIndex = 0:14; % Zernike 系数索引
+    % 设定权重 k，使其随阶数增大而减小
+    kValues = [120000, 10, 10, 4, 10, 1, 0.8, 0.6, 0.5, 0.4, 0.3, 0.2, 0.15, 0.1, 0.05];
+    % 生成随机 Zernike 系数
+    val = kValues .* rand(size(jIndex));
+    wvf = wvfSet(wvf, 'zcoeffs', val, jIndex);
+    % wvfSet(wvf, 'zcoeffs', val, jIndex);
+    % jIndex is optional, and can be a vector of j values or a string
+    % array of coefficient names that are converted to indices using
+    % wvfOSAIndexToVectorIndex.
+    %      j   name
+    %
+    %      0  'piston'
+    %      1  'vertical_tilt'
+    %      2  'horizontal_tilt'
+    %      3  'oblique_astigmatism'
+    %      4  'defocus'
+    %      5  'vertical_astigmatism'
+    %      6  'vertical_trefoil'
+    %      7  'vertical_coma'
+    %      8  'horizontal_coma'
+    %      9  'oblique_trefoil'
+    %      10 'oblique_quadrafoil'
+    %      11 'oblique_secondary_astigmatism'
+    %      12 'primary_spherical', 'spherical'
+    %      13 'vertical_secondary_astigmatism'
+    %      14 'vertical_quadrafoil'
     c = wvfGet(wvf, 'zcoeffs');
     if (length(c) < 5)
         c(length(c) + 1:5) = 0;

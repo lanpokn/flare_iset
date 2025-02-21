@@ -59,7 +59,10 @@ radius = radius*imSize;
 for ii = 1:numel(xvals)
     cc = mod(ii,numel(cColors)) + 1;    
     %img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',cColors{cc});
-    img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[0.1+0.1*rand(),0.2+0.8*rand(),0.2+0.8*rand()]);
+    red = 0.1+0.1*rand();
+    green = 0.25+0.75*rand();
+    blue = 0.25+0.75*rand();
+    img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[red,green,blue]);
 end
 
 %% Put lines of different thickness and orientation around the middle
@@ -85,7 +88,7 @@ end
 % for ii = 1:numel(xvals)
 %     img = insertShape(img,'filled-rectangle',[xvals(ii),y,hw(ii,1),hw(ii,2)],'Color','white');
 % end
-ieNewGraphWin; imagesc(img); axis image
+% ieNewGraphWin; imagesc(img); axis image
 
 % Add a uniform low level to set the dynamic range
 wave = 400:10:700;

@@ -12,6 +12,8 @@ scene = sceneSet(scene,'fov',1);
 % sampling density to show the flare clearly.
 wvf = wvfSet(wvf,'npixels',1024*8);
 
+
+
 % % Try change to dot and line scratches, as you like
 nsides = [4 0 6 0 8 0];
 img = cell(numel(nsides),1);
@@ -26,16 +28,24 @@ if ~exist(outputDir, 'dir')
 end
 
 % Iterate over nsides to generate and save images
+% 到时候如果做单张仿真图片的对齐，只需要把下边涉及随机的一些关键函数，一律开一个非随机版本即可
 for ii = 1:numel(nsides)
+    %scratch
     [aperture, params] = wvfAperture(wvf,'nsides',nsides(ii),...
         'dot mean',10, 'dot sd',5, 'dot opacity',0,'dot radius',5,...
         'line mean',100, 'line sd', 5, 'line opacity',0,'linewidth',2,'segmentlength',2000);
     apertureFilename = fullfile(outputDir, sprintf('aperture_%d.png', ii));
     imwrite(aperture, apertureFilename);  % Save as PNG (you can change the format)
+
+    %无敌了，根本找不到合理的改zcoeff的接口，只能在wvfComputer里自己搞了
+    oi = oiSet(oi,'optics wvf',wvf);
+
     oi = oiSet(oi,'fnumber',1.5);
 
     oi = oiSet(oi,'focal length',4.38e-3,'m');
-
+    %defocusD = 0; vertical_astigmatism = 0; oblique_astigmatism = 0;
+    %oi = oiSet(oi,'zcoeffs',[defocusD,vertical_astigmatism,oblique_astigmatism]
+    %     oi = oiCompute(wvf,scene);
     oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture);%3e-6
 
     % To see the flare in the OI, we must use hdr rendering mode.

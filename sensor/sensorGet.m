@@ -514,6 +514,7 @@ switch oType
                 
                 % Delete this after a while.  I don't know what the
                 % criterion should be.
+                %TODO, what is this?
                 assert( min(volts(:)) - ao > -1e-3);
 
                 % We used to clip at the voltage swing.  But that is
