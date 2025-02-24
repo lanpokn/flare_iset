@@ -142,8 +142,8 @@ if isempty(texFile)
         % Start position
         start_xy = rand(2, 1) * imageSize;
         %
-        %segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
-        segments_xy = [1;1] * segment_length;
+        segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
+        %segments_xy = [1;1] * segment_length;
         vertices_xy = cumsum([start_xy, segments_xy], 2);
         vertices_xy = reshape(vertices_xy, 1, []);
 
@@ -210,13 +210,15 @@ idx = (imRadius > radius);
 im(idx) = 0;
 
 %another circular
-temp1 = round(imageSize/12 * 5);
-temp2 = round(imageSize/6);
-centerPoint = [temp1 + 1+randi(temp2), temp1 + 1+randi(temp2)];
-[X,Y] = meshgrid((1:imageSize) - centerPoint(1),(1:imageSize) - centerPoint(2));
-imRadius = sqrt(X.^2 + Y.^2);
-idx = (imRadius > radius);
-im(idx) = 0;
+if(rand()>0.5)
+    temp1 = round(imageSize/12 * 5);
+    temp2 = round(imageSize/6);
+    centerPoint = [temp1 + 1+randi(temp2), temp1 + 1+randi(temp2)];
+    [X,Y] = meshgrid((1:imageSize) - centerPoint(1),(1:imageSize) - centerPoint(2));
+    imRadius = sqrt(X.^2 + Y.^2);
+    idx = (imRadius > radius);
+    im(idx) = 0;
+end
 im = imrotate(im,randi(30));
 im = imresize(im,[imageSize,imageSize]);
 %%
