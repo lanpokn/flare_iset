@@ -57,11 +57,11 @@ y = round(imSize * 0.5);
 xvals = round(linspace(0.5,0.5,nCircles)*imSize);
 radius = radius*imSize;
 for ii = 1:numel(xvals)
-    cc = mod(ii,numel(cColors)) + 1;    
+    %cc = mod(ii,numel(cColors)) + 1;    
     %img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',cColors{cc});
-    red = 0.1+0.1*rand();
-    green = 0.25+0.75*rand();
-    blue = 0.25+0.75*rand();
+    red = 0.05+0.95*rand();
+    green = 0.05+0.95*rand();
+    blue = 0.05+0.95*rand();
     img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[red,green,blue]);
 end
 

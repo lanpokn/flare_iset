@@ -2,20 +2,23 @@
  %   'dynamic range',5,...
   %  'patch shape','circle','npatches',5,'patch size',10);
 
-scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.005,'circlecolors',{'yellow'},'imagesize',800);
+scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.001,'circlecolors',{'random'},'imagesize',800);
 %scene = sceneCreate('hdr','ncircles',1,'nlines',1);
+%scene = sceneSet(scene,'fov',1);
 scene = sceneSet(scene,'fov',1);
 % create oi
 [oi,wvf] = oiCreate('wvf');
 
 % This sets the sample density of the aperture image. We use a high
-% sampling density to show the flare clearly.
-wvf = wvfSet(wvf,'npixels',1024*8);
+% sampling density to show the flare clearly.1024*4
+%1000 4000 is good
+%800 6000 is good
+wvf = wvfSet(wvf,'npixels',6400);
 
 
 
 % % Try change to dot and line scratches, as you like
-nsides = [4 0 6 0 8 0];
+nsides = [0 20 4 0 6 0 8 0];
 img = cell(numel(nsides),1);
 sensor = [];
 
@@ -29,6 +32,7 @@ end
 
 % Iterate over nsides to generate and save images
 % 到时候如果做单张仿真图片的对齐，只需要把下边涉及随机的一些关键函数，一律开一个非随机版本即可
+% ghost和光圈这些还有关，但就是没找到调整光源大小的方法，无敌了
 for ii = 1:numel(nsides)
     %scratch
     [aperture, params] = wvfAperture(wvf,'nsides',nsides(ii),...
@@ -40,16 +44,25 @@ for ii = 1:numel(nsides)
     %无敌了，根本找不到合理的改zcoeff的接口，只能在wvfComputer里自己搞了
     oi = oiSet(oi,'optics wvf',wvf);
 
+    %oi = oiSet(oi,'fnumber',1.5);
+    %这个改完，晕的纹路真实了一些，但是依然没有调整光源大小的作用
+    %能改晕的样子，也可以随机
     oi = oiSet(oi,'fnumber',1.5);
-
-    oi = oiSet(oi,'focal length',4.38e-3,'m');
+    
+    %这个影响光源大小？好像不是，倒是让结果图片变成800x800的标准版了
+    %oi = oiSet(oi,'focal length',4.38e-3,'m');
+    oi = oiSet(oi,'focal length',2.38e-4,'m');
     %defocusD = 0; vertical_astigmatism = 0; oblique_astigmatism = 0;
     %oi = oiSet(oi,'zcoeffs',[defocusD,vertical_astigmatism,oblique_astigmatism]
     %     oi = oiCompute(wvf,scene);
+    %这个和大小关系也不大，但是和颜色相关的稳定性关系大
+    %oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture);%3e-6
     oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture);%3e-6
-
     % To see the flare in the OI, we must use hdr rendering mode.
-    oi = oiAdjustIlluminance(oi, 100);
+    %this matters the size!
+    %这个不给。或者给的很小，比如0.1，就是光源，但0.1可能过于小了.好像并不行，四边形时不行
+    % oi = oiAdjustIlluminance(oi, 100);
+    oi = oiAdjustIlluminance(oi, 100*rand());
     %oiWindow(oi,'render flag','hdr');
 
     % To visualize, we used the ip window image
@@ -61,12 +74,14 @@ for ii = 1:numel(nsides)
         sensor = sensorCompute(sensor, oi);
         ip = ipCompute(ip, sensor);
     end
+    %[ip, sensor] = piRadiance2RGB(oi, 'etime', 1/10);
 
     % Store the image into the img cell array
     img{ii} = ipGet(ip, 'srgb');
     
     % Save the image to the output directory
     imgFilename = fullfile(outputDir, sprintf('image_%d.png', ii));
+    img{ii} = imresize(img{ii},[512,512]);
     imwrite(img{ii}, imgFilename);  % Save as PNG (you can change the format)
     
     % Optionally, you can display the image

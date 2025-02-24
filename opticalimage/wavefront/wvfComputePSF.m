@@ -102,9 +102,7 @@ for wl = 1:nWave
     % to insert ifftshift before transforming centered data.
     %
     amp = fftshift(fft2(ifftshift(pupilfunc{wl})));
-    
-    % We convert to intensity because the PSF is an intensity (real)
-    % valued function. That is how Fourier optics works.
+
     inten = (amp .* conj(amp));
 
     % Given the way we computed intensity, should not need to take the

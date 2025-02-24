@@ -175,7 +175,7 @@ else
     im = imresize(im, [imageSize, imageSize]);
 end
 centerPoint = [imageSize/2 + 1, imageSize/2+1];
-radius = (imageSize - 1)/2;
+radius = (imageSize - 1)/3;
 
 % Clip the image with a bounding polygon
 if nSides > 0
@@ -215,11 +215,10 @@ temp2 = round(imageSize/6);
 centerPoint = [temp1 + 1+randi(temp2), temp1 + 1+randi(temp2)];
 [X,Y] = meshgrid((1:imageSize) - centerPoint(1),(1:imageSize) - centerPoint(2));
 imRadius = sqrt(X.^2 + Y.^2);
-% ieNewGraphWin; imagesc(imRadius); colormap(gray); colorbar; axis image
 idx = (imRadius > radius);
 im(idx) = 0;
-% ieNewGraphWin; imagesc(im); colormap(gray); colorbar; axis image
 im = imrotate(im,randi(30));
+im = imresize(im,[imageSize,imageSize]);
 %%
 if nargout == 2
     % Fill in params
