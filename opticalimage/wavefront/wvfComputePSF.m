@@ -130,9 +130,8 @@ for wl = 1:nWave
     %psf{wl} = imresize(psf_resized, [m, n], 'nearest');
     %psf{wl} = CropCenter(psf_resized, m);
     window = centerCropWindow2d(size(psf_resized), [m,n]);
+    %TODO 色散与非色散都生成试一试
     psf{wl} = imcrop(psf_resized, window);
-    %psf{wl} = abs(fft2(pupilfunc{wl})) .^ 2;
-    %psf{wl} = fftshift(fftshift(psf{wl}, 1), 2);
 
     %{
         % BW:  Commented out because DOCHECKS = false for several years.

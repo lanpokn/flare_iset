@@ -50,7 +50,6 @@ img = zeros(imSize,imSize);
 nCircles = p.Results.ncircles;
 radius   = p.Results.radius;
 cColors  = p.Results.circlecolors;
-%TODO此处导致了炫光一直在偏右上固定位置，也许我可以改成随机
 % y = round(imSize * 0.25);
 % xvals = round(linspace(0.2,0.8,nCircles)*imSize);
 y = round(imSize * 0.5);
@@ -59,9 +58,42 @@ radius = radius*imSize;
 for ii = 1:numel(xvals)
     %cc = mod(ii,numel(cColors)) + 1;    
     %img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',cColors{cc});
-    red = 0.05+0.95*rand();
-    green = 0.05+0.95*rand();
-    blue = 0.05+0.95*rand();
+    %red = 0.05+0.95*rand();
+    %green = 0.05+0.95*rand();
+    %blue = 0.05+0.95*rand();
+    %more case that will really happen in real dataset
+    light_type = randi([1, 5]);  % choose those appear more in real world
+
+    switch light_type
+        case 1  % 白光
+            red = 0.7 + 0.3 * rand();
+            green = 0.7 + 0.3 * rand();
+            blue = 0.7 + 0.3 * rand();
+        case 2  % 蓝光
+            red = 0.05 + 0.25 * rand();
+            green = 0.05 + 0.25 * rand();
+            blue = 0.9 + 0.1 * rand();
+        case 3  % 蓝光
+            red = 0.05 + 0.45 * rand();
+            green = 0.05 + 0.45 * rand();
+            blue = 0.5 + 0.5 * rand();
+        % case 3  % 红光
+        %     red = 0.5 + 0.5 * rand();
+        %     green = 0.05 + 0.45 * rand();
+        %     blue = 0.05 + 0.45 * rand();
+        % case 4  % 紫光
+        %     red = 0.5 + 0.5 * rand();
+        %     green = 0.05 + 0.1 * rand();
+        %     blue = 0.5 + 0.5 * rand();
+        case 4  % 太阳光
+            red = 0.8 + 0.2 * rand();
+            green = 0.7 + 0.3 * rand();
+            blue = 0.5 + 0.5 * rand();
+        case 5  % 太阳光
+            red = 0.8 + 0.2 * rand();
+            green = 0.7 + 0.3 * rand();
+            blue = 0.5 + 0.5 * rand();
+    end
     img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[red,green,blue]);
 end
 
