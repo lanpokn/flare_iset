@@ -70,13 +70,13 @@ for ii = 1:numel(xvals)
             green = 0.7 + 0.3 * rand();
             blue = 0.7 + 0.3 * rand();
         case 2  % 蓝光
-            red = 0.05 + 0.25 * rand();
-            green = 0.05 + 0.25 * rand();
-            blue = 0.9 + 0.1 * rand();
+            red = 30/255 + 0.1 * rand();
+            green = 144/255 + 0.1 * rand();
+            blue = 0.95 + 0.05 * rand();
         case 3  % 蓝光
-            red = 0.05 + 0.45 * rand();
-            green = 0.05 + 0.45 * rand();
-            blue = 0.5 + 0.5 * rand();
+            red = 135/255 + 0.1 * rand();
+            green = 206/255 + 0.1 * rand();
+            blue = 0.95 + 0.05 * rand();
         % case 3  % 红光
         %     red = 0.5 + 0.5 * rand();
         %     green = 0.05 + 0.45 * rand();
@@ -94,7 +94,21 @@ for ii = 1:numel(xvals)
             green = 0.7 + 0.3 * rand();
             blue = 0.5 + 0.5 * rand();
     end
-    img = insertShape(img,'filled-circle',[xvals(ii),y,radius(ii)],'Color',[red,green,blue]);
+    % 生成椭圆，随机调整长短轴
+    %aspect_ratio = 1 + (rand - 0.5) * 0.5;  % 随机生成一个比例，控制长短轴比例，1表示圆形，<1表示横向拉长，>1表示纵向拉长
+    
+    % 根据随机生成的比例调整长短轴
+    diff = 0.1*radius(ii)+0.9*radius(ii)*rand();
+    long_axis = radius(ii)+diff;  % 长轴
+    short_axis = radius(ii)-diff;  % 短轴
+    
+    % 随机生成一个旋转角度，范围是 0 到 360 度
+    angle = rand() * 360;
+    
+    % 插入椭圆，确保传入五列矩阵，添加旋转角度
+    img = insertShape(img, 'filled-ellipse', [xvals(ii), y, long_axis, short_axis, angle], 'Color', [red, green, blue]);
+
+
 end
 
 %% Put lines of different thickness and orientation around the middle

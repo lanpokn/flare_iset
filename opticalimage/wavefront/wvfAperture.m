@@ -125,37 +125,78 @@ if isempty(texFile)
             'Opacity', opacity);
     end
 
-    %% Add polylines, simulating scratches.
-
+    % %% Add polylines, simulating scratches.
+    % 
     num_lines = randn(1,1)*lineSD + lineMean;
     num_lines = round(num_lines);
-
-    % max_width = max(0, round(5 + randn * 5));
-    % 不应该来回折线，而是生成几组，组内同方向，的长划痕
-    % 此处改成与镜头实际的常见微观划痕一致，找资料吧
-    for i = 1:num_lines
-
-        %num_segments = randi(16);
-        num_segments = 1;
-        segment_length = rand * segmentLength;
-
-        % Start position
-        start_xy = rand(2, 1) * imageSize;
-        %
-        segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
-        %segments_xy = [1;1] * segment_length;
-        vertices_xy = cumsum([start_xy, segments_xy], 2);
-        vertices_xy = reshape(vertices_xy, 1, []);
-
-        % Width of the scratches
-        width = round(max(1,lineWidth + randn*(lineWidth/2)));
-
-        % Note: the 'Opacity' option doesn't apply to lines, so we have to change the
-        % line color to achieve a similar effect. Also note that [0.5 .. 1] opacity
-        % maps to [0.5 .. 0] in color values.
-        opacity = lineOpacity + (rand * 0.5);
-        im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, ...
-            'Color', [opacity, opacity, opacity]);
+    % 
+    % % max_width = max(0, round(5 + randn * 5));
+    % % 不应该来回折线，而是生成几组，组内同方向，的长划痕
+    % % 此处改成与镜头实际的常见微观划痕一致，找资料吧
+    % for i = 1:num_lines
+    % 
+    %     %num_segments = randi(16);
+    %     num_segments = 1;
+    %     segment_length = rand * segmentLength;
+    % 
+    %     % Start position
+    %     start_xy = rand(2, 1) * imageSize;
+    %     %
+    %     segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
+    %     %segments_xy = [1;1] * segment_length;
+    %     vertices_xy = cumsum([start_xy, segments_xy], 2);
+    %     vertices_xy = reshape(vertices_xy, 1, []);
+    % 
+    %     % Width of the scratches
+    %     width = round(max(1,lineWidth + randn*(lineWidth/2)));
+    % 
+    %     % Note: the 'Opacity' option doesn't apply to lines, so we have to change the
+    %     % line color to achieve a similar effect. Also note that [0.5 .. 1] opacity
+    %     % maps to [0.5 .. 0] in color values.
+    %     opacity = lineOpacity + (rand * 0.5);
+    %     im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, ...
+    %         'Color', [opacity, opacity, opacity]);
+    % end
+    % Generate a random number of lines (1-5 groups)
+    num_groups = randi([1, 7]);  % 生成1到5组
+    lines_per_group = floor(num_lines / num_groups)-1;  % 每组的划痕数
+    
+    % Generate direction of each group (consistent within each group)
+    directions = rand(1, num_groups) * 2 * pi;  % 随机生成 1 到 5 组的方向（角度）
+    
+    % For each group, generate scratches with the same direction
+    for group_idx = 1:num_groups
+        % Get number of lines for this group
+        num_lines_in_group = lines_per_group;
+        
+        % Generate scratches in the same direction
+        for i = 1:num_lines_in_group
+            % Random length of the scratch segment
+            % num_segments = 1;
+            segment_length = rand * segmentLength;
+    
+            % Start position
+            start_xy = rand(2, 1) * imageSize;
+    
+            % Calculate the direction vector for this group
+            direction_vector = [cos(directions(group_idx)); sin(directions(group_idx))];
+    
+            % Generate points along the line (same direction)
+            segments_xy = direction_vector * segment_length;
+    
+            % Vertices of the scratch line
+            vertices_xy = cumsum([start_xy, segments_xy], 2);
+            vertices_xy = reshape(vertices_xy, 1, []);
+            
+            % Width of the scratches
+            width = round(max(1, lineWidth + randn * (lineWidth / 2)));
+    
+            % Set opacity of the line
+            opacity = lineOpacity + (rand * 0.5);
+            
+            % Insert the scratch line into the image
+            im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, 'Color', [opacity, opacity, opacity]);
+        end
     end
 else
     im = imread(texFile);

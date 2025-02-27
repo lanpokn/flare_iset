@@ -115,7 +115,8 @@ for wl = 1:nWave
     [m, n] = size(psf{wl});  % 获取原矩阵的尺寸
 
     k = wList(wl)/wList(nWave);  % 假设 k 是一个大于1的常数，可以是一个实数
-
+    %不能是k乘以k，因为函数自变量取模不会变的
+    %k = sqrt(k);
     % 创建原始坐标网格
     %[xx, yy] = meshgrid(1:n, 1:m);
 

@@ -4,12 +4,13 @@ outputDir = './output_images/flare';
 outputDir_aper = './output_images/aperture';  
 outputDir_light = './output_images/light';
 apertureSize = 6400;
-for i = 307:loop
+%from 532 is new
+for i = 532:loop
     %scene = sceneCreate('hdr image',...
      %   'dynamic range',5,...
       %  'patch shape','circle','npatches',5,'patch size',10);
     
-    scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.001,'circlecolors',{'random'},'imagesize',800);
+    scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.01,'circlecolors',{'random'},'imagesize',800);
     %scene = sceneCreate('hdr','ncircles',1,'nlines',1);
     %scene = sceneSet(scene,'fov',1);
     scene = sceneSet(scene,'fov',1);
@@ -42,9 +43,11 @@ for i = 307:loop
     % ghost和光圈这些还有关，但就是没找到调整光源大小的方法，无敌了
     for ii = 1:numel(nsides)
         %scratch
+        % 'dot mean',200, 'dot sd',100, 'dot opacity',0.6,'dot radius',15+50*rand(),...
+        % 'line mean',200, 'line sd',100, 'line opacity',0.6,'linewidth',5+25*rand(),'segmentlength',3000+4500*rand());
         [aperture, params] = wvfAperture(wvf,'nsides',nsides(ii),...
-            'dot mean',200, 'dot sd',100, 'dot opacity',0.6,'dot radius',15+50*rand(),...
-            'line mean',200, 'line sd',100, 'line opacity',0.6,'linewidth',5+25*rand(),'segmentlength',3000+4500*rand());
+            'dot mean',100, 'dot sd',100, 'dot opacity',0.6,'dot radius',5+25*rand(),...
+            'line mean',300, 'line sd',150, 'line opacity',0.6,'linewidth',2+10*rand(),'segmentlength',3000+4500*rand());
         apertureFilename = fullfile(outputDir_aper, sprintf('image_%d_%d.png', i,nsides(ii)));
         imwrite(aperture, apertureFilename);  % Save as PNG (you can change the format)
     
