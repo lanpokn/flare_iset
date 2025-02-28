@@ -1,16 +1,17 @@
 loop = 5000;
 % Define a directory to save images
-outputDir = './output_images/flare';  
-outputDir_aper = './output_images/aperture';  
-outputDir_light = './output_images/light';
-apertureSize = 6400;
+outputDir = './output_images/flare2';  
+outputDir_aper = './output_images/aperture2';  
+outputDir_light = './output_images/light2';
+apertureSize = 4800;
+imageSize = 1200;
 %from 532 is new
 for i = 726:loop
     %scene = sceneCreate('hdr image',...
      %   'dynamic range',5,...
       %  'patch shape','circle','npatches',5,'patch size',10);
     
-    scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.01,'circlecolors',{'random'},'imagesize',800);
+    scene = sceneCreate('hdr','ncircles',1,'nlines',0,'radius',0.01,'circlecolors',{'random'},'imagesize',imageSize);
     %scene = sceneCreate('hdr','ncircles',1,'nlines',1);
     %scene = sceneSet(scene,'fov',1);
     scene = sceneSet(scene,'fov',1);
@@ -73,7 +74,7 @@ for i = 726:loop
         %这个不给。或者给的很小，比如0.1，就是光源，但0.1可能过于小了.好像并不行，四边形时不行
         Illumi_level = 5+45*rand();
         oi = oiAdjustIlluminance(oi, Illumi_level);
-    
+        %oiWindow(oi,'render flag','hdr');
         % To visualize, we used the ip window image
         if isempty(sensor)
             % First time through, create a sensor using this function.
@@ -105,7 +106,7 @@ for i = 726:loop
         aperture_ideal = im;
 
         oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture_ideal);%3e-6
-        oi = oiAdjustIlluminance(oi, Illumi_level/30.0);
+        oi = oiAdjustIlluminance(oi, Illumi_level/5.0);
 
         if isempty(sensor_l)
             % First time through, create a sensor using this function.
