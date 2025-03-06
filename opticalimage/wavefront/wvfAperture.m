@@ -129,36 +129,11 @@ if isempty(texFile)
     % 
     num_lines = randn(1,1)*lineSD + lineMean;
     num_lines = round(num_lines);
-    % 
-    % % max_width = max(0, round(5 + randn * 5));
-    % % 不应该来回折线，而是生成几组，组内同方向，的长划痕
-    % % 此处改成与镜头实际的常见微观划痕一致，找资料吧
-    % for i = 1:num_lines
-    % 
-    %     %num_segments = randi(16);
-    %     num_segments = 1;
-    %     segment_length = rand * segmentLength;
-    % 
-    %     % Start position
-    %     start_xy = rand(2, 1) * imageSize;
-    %     %
-    %     segments_xy = RandomPointsInUnitCircle(num_segments) * segment_length;
-    %     %segments_xy = [1;1] * segment_length;
-    %     vertices_xy = cumsum([start_xy, segments_xy], 2);
-    %     vertices_xy = reshape(vertices_xy, 1, []);
-    % 
-    %     % Width of the scratches
-    %     width = round(max(1,lineWidth + randn*(lineWidth/2)));
-    % 
-    %     % Note: the 'Opacity' option doesn't apply to lines, so we have to change the
-    %     % line color to achieve a similar effect. Also note that [0.5 .. 1] opacity
-    %     % maps to [0.5 .. 0] in color values.
-    %     opacity = lineOpacity + (rand * 0.5);
-    %     im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, ...
-    %         'Color', [opacity, opacity, opacity]);
-    % end
-    % Generate a random number of lines (1-5 groups)
+    
     num_groups = randi([1, 7]);  % 生成1到5组
+    if rand>0.5
+        num_groups = 2;
+    end
     lines_per_group = floor(num_lines / num_groups)-1;  % 每组的划痕数
     
     % Generate direction of each group (consistent within each group)
@@ -198,6 +173,56 @@ if isempty(texFile)
             im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, 'Color', [opacity, opacity, opacity]);
         end
     end
+    % 参数设置
+    % num_lines = round(randn * lineSD + lineMean);  % 总线条数
+    % num_groups = 2;  % 仅两组，互相垂直
+    % lines_per_group = floor(num_lines / num_groups);  % 每组的线条数
+    % 
+    % % 创建空白图像
+    % im = zeros(imageSize, imageSize, 3);
+    % 
+    % % 计算延申长度，确保线条超出边界 (2倍图像对角线长度)
+    % extend_length = sqrt(2) * imageSize * 2;
+    % 
+    % % 随机生成第一个组的角度，然后计算互相垂直的角度
+    % angle1 = rand * 180;  % 随机生成一个基准角度 (0~180度)
+    % angle2 = mod(angle1 + 90, 180);  % 互相垂直的角度
+    % 
+    % % 设置两组方向向量
+    % directions = [angle1, angle2];
+    % dir_vectors = [cosd(directions); sind(directions)];  % 方向向量
+    % 
+    % % 等间距计算
+    % spacing = imageSize / (lines_per_group + 1);
+    % 
+    % % 为每一组生成网格线
+    % for group_idx = 1:num_groups
+    %     direction_vector = dir_vectors(:, group_idx);
+    %     perpendicular_vector = [-direction_vector(2); direction_vector(1)];  % 垂直方向向量
+    % 
+    %     % 生成当前组的线条
+    %     for i = -lines_per_group:lines_per_group
+    %         % 计算平行线的偏移位置
+    %         offset = i * spacing;
+    %         start_xy = imageSize / 2 + offset * perpendicular_vector;  % 起点沿垂直方向偏移
+    % 
+    %         % 计算无限延申的起点和终点
+    %         extended_start = start_xy - extend_length * direction_vector;
+    %         extended_end = start_xy + extend_length * direction_vector;
+    % 
+    %         % 转换为插入格式
+    %         vertices_xy = [extended_start; extended_end];
+    %         vertices_xy = reshape(vertices_xy, 1, []);
+    % 
+    %         % 设置宽度和透明度
+    %         width = round(max(1, lineWidth + randn * (lineWidth / 2)));
+    %         opacity = lineOpacity + (rand * 0.5);
+    % 
+    %         % 插入线条到图像
+    %         im = insertShape(im, 'Line', vertices_xy, 'LineWidth', width, ...
+    %                          'Color', [opacity, opacity, opacity]);
+    %     end
+    % end
 else
     im = imread(texFile);
     try

@@ -1,12 +1,12 @@
 loop = 5000;
 % Define a directory to save images
-outputDir = './output_images/flare2';  
-outputDir_aper = './output_images/aperture2';  
-outputDir_light = './output_images/light2';
+outputDir = './output_images/flare3';  
+outputDir_aper = './output_images/aperture3';  
+outputDir_light = './output_images/light3';
 apertureSize = 4800;
 imageSize = 1200;
 %from 532 is new
-for i = 726:loop
+for i = 1650:loop
     %scene = sceneCreate('hdr image',...
      %   'dynamic range',5,...
       %  'patch shape','circle','npatches',5,'patch size',10);
@@ -27,7 +27,7 @@ for i = 726:loop
     
     
     % % Try change to dot and line scratches, as you like
-    nsides = [0 randi([3,10]) randi([30,60])];
+    nsides = [0 randi([30,60])];
     img = cell(numel(nsides),1);
     sensor = [];
     sensor_l = [];
@@ -73,6 +73,7 @@ for i = 726:loop
         %this matters the size!
         %这个不给。或者给的很小，比如0.1，就是光源，但0.1可能过于小了.好像并不行，四边形时不行
         Illumi_level = 5+45*rand();
+        Illumi_level = Illumi_level*2;
         oi = oiAdjustIlluminance(oi, Illumi_level);
         %oiWindow(oi,'render flag','hdr');
         % To visualize, we used the ip window image
@@ -106,7 +107,7 @@ for i = 726:loop
         aperture_ideal = im;
 
         oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture_ideal);%3e-6
-        oi = oiAdjustIlluminance(oi, Illumi_level/5.0);
+        oi = oiAdjustIlluminance(oi, Illumi_level/1.0);%/5
 
         if isempty(sensor_l)
             % First time through, create a sensor using this function.
