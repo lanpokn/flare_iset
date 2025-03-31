@@ -130,8 +130,8 @@ if isempty(texFile)
     num_lines = randn(1,1)*lineSD + lineMean;
     num_lines = round(num_lines);
     
-    num_groups = randi([1, 7]);  % 生成1到5组
-    if rand>0.5
+    num_groups = randi([3, 30]);  % 生成1到5组
+    if rand>0.8
         num_groups = 2;
     end
     lines_per_group = floor(num_lines / num_groups)-1;  % 每组的划痕数
@@ -276,7 +276,7 @@ idx = (imRadius > radius);
 im(idx) = 0;
 
 %another circular
-if(rand()>0.5)
+if(rand()>0.95)
     temp1 = round(imageSize/12 * 5);
     temp2 = round(imageSize/6);
     centerPoint = [temp1 + 1+randi(temp2), temp1 + 1+randi(temp2)];

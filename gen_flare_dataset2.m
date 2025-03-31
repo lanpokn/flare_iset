@@ -1,12 +1,16 @@
 loop = 5000;
 % Define a directory to save images
-outputDir = './output_images/flare3';  
-outputDir_aper = './output_images/aperture3';  
-outputDir_light = './output_images/light3';
-apertureSize = 4800;
-imageSize = 1200;
+outputDir = './output_images/flare9';  
+outputDir_aper = './output_images/aperture9';  
+outputDir_light = './output_images/light9';
+% apertureSize = 4800;
+% imageSize = 1200;
+% apertureSize = 6000;
+% imageSize = 1400;
+apertureSize = 8000;
+imageSize = 1800;
 %from 532 is new
-for i = 1650:loop
+for i = 4957:loop
     %scene = sceneCreate('hdr image',...
      %   'dynamic range',5,...
       %  'patch shape','circle','npatches',5,'patch size',10);
@@ -27,7 +31,7 @@ for i = 1650:loop
     
     
     % % Try change to dot and line scratches, as you like
-    nsides = [0 randi([30,60])];
+    nsides = [0 randi([50,80])];
     img = cell(numel(nsides),1);
     sensor = [];
     sensor_l = [];
@@ -45,10 +49,12 @@ for i = 1650:loop
     for ii = 1:numel(nsides)
         %scratch
         % 'dot mean',200, 'dot sd',100, 'dot opacity',0.6,'dot radius',15+50*rand(),...
-        % 'line mean',200, 'line sd',100, 'line opacity',0.6,'linewidth',5+25*rand(),'segmentlength',3000+4500*rand());
+        % 'line mean',200, 'line sd',100, 'line
+        % opacity',0.6,'linewidth',5+25*rand(),'segmentlength',3000+4500*rand()); 
+        factor = 1.4;%original opacity is 0.6
         [aperture, params] = wvfAperture(wvf,'nsides',nsides(ii),...
-            'dot mean',100, 'dot sd',100, 'dot opacity',0.6,'dot radius',5+25*rand(),...
-            'line mean',300, 'line sd',150, 'line opacity',0.6,'linewidth',2+10*rand(),'segmentlength',3000+4500*rand());
+            'dot mean',100*factor, 'dot sd',100*factor, 'dot opacity',0.5,'dot radius',(5+50*rand())*factor,...
+            'line mean',300*factor*0.5, 'line sd',150*factor*0.5, 'line opacity',0.5,'linewidth',(2+10*rand())*factor,'segmentlength',3000+4500*rand()*factor);
         apertureFilename = fullfile(outputDir_aper, sprintf('image_%d_%d.png', i,nsides(ii)));
         imwrite(aperture, apertureFilename);  % Save as PNG (you can change the format)
     
@@ -72,7 +78,8 @@ for i = 1650:loop
         % To see the flare in the OI, we must use hdr rendering mode.
         %this matters the size!
         %这个不给。或者给的很小，比如0.1，就是光源，但0.1可能过于小了.好像并不行，四边形时不行
-        Illumi_level = 5+45*rand();
+        % Illumi_level = 5+15*rand();% multi
+        Illumi_level = 3+17*rand();%single 7
         Illumi_level = Illumi_level*2;
         oi = oiAdjustIlluminance(oi, Illumi_level);
         %oiWindow(oi,'render flag','hdr');
@@ -92,7 +99,7 @@ for i = 1650:loop
         
         % Save the image to the output directory
         imgFilename = fullfile(outputDir, sprintf('image_%d_%d.png', i,nsides(ii)));
-        img{ii} = imresize(img{ii},[512,512]);
+        % img{ii} = imresize(img{ii},[512,512]);
         imwrite(img{ii}, imgFilename); 
 
         % get a ideal pupil
@@ -107,7 +114,7 @@ for i = 1650:loop
         aperture_ideal = im;
 
         oi = oiCompute(oi, scene,'crop',true,'pixel size',3e-6,'aperture',aperture_ideal);%3e-6
-        oi = oiAdjustIlluminance(oi, Illumi_level/1.0);%/5
+        oi = oiAdjustIlluminance(oi, Illumi_level/(1.0+rand()));%/5
 
         if isempty(sensor_l)
             % First time through, create a sensor using this function.
@@ -121,7 +128,7 @@ for i = 1650:loop
     
         % Store the image into the img cell array
         img{ii} = ipGet(ip_l, 'srgb');
-        img{ii} = imresize(img{ii},[512,512]);
+        % img{ii} = imresize(img{ii},[512,512]);
         % Save the image to the output directory
         imgFilename = fullfile(outputDir_light, sprintf('image_%d_%d.png', i,nsides(ii)));
 
